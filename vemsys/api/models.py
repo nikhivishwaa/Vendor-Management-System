@@ -1,58 +1,70 @@
-from typing import Any
+from typing import Any, Iterable, Optional
 from django.db import models
-from random import randint, choice
+from .unique_code_generator import UniqueCodeGenrator as ucg
 
 
-# Generate unique string code of 10 digit
-class VendorCode():
-    id_counter: int = 999
-
-    def __init__(self):
-        self.name = self.value()
-        VendorCode.id_counter += 1
-
-    def value(self) -> str:
-        zerovalue = ['A', 'B', 'C', 'X', 'Y', 'Z']
-        mainstr = ""
-        count = VendorCode.id_counter
-        for i in range(8):
-            x = (ord('C') + count % 20)
-            count //= 20
-            if x == ord('C') or x >= ord('X'):
-                mainstr += choice(zerovalue)
-            else:
-                mainstr += chr(x)
-        A, Z = ord('A'), ord('Z')
-        mainstr += chr(randint(A, Z))
-        mainstr += chr(randint(A, Z))
-        return mainstr[::-1]
+class Vendor(models.Model):
+    name = models.CharField(max_length=255)
+    contact_details = models.TextField()
+    address = models.TextField()
+    vendor_code = models.CharField(max_length=10, unique=True, primary_key=True, editable=False)
+    on_time_delivery_rate = models.FloatField(default=0)
+    quality_rating_avg = models.FloatField(default=0)
+    average_response_time = models.FloatField(default=0)
+    fulfillment_rate = models.FloatField(default=0)
 
     def __str__(self) -> str:
         return self.name
     
+    def save(self, force_insert: bool = ..., force_update: bool = ..., using: str | None = ..., update_fields: Iterable[str] | None = ...) -> None:
+        if self.vendor_code == "":
+            while True:
+                x = 0
+                code = ucg.generate(x)
+                try:
+                    Vendor.objects.get(vender_code = code)
+                    x += 1
+                except Exception as e:
+                    self.vendor_code = code
+                    break
+        return super().save()
 
-# Model for vendors
-class Vendor(models.Model):
-    name = models.CharField(max_length=100)
-    contact_details = models.TextField()
-    address = models.TextField()
-    vendor_code = models.CharField(
-        max_length=10,
-        primary_key=True,
-        null=False,
-        editable=False,
-    )
+
+class PurchaseOrder(models.Model):
+    po_number = models.CharField(max_length=15, primary_key=True, editable=False)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(auto_now_add=True)
+    delivery_date = models.DateTimeField()
+    items = models.JSONField()
+    quantity = models.IntegerField()
+    status = models.CharField(max_length=20, default='pending')
+    quality_rating = models.FloatField(null=True, blank=True)
+    issue_date = models.DateTimeField(auto_now_add=True)
+    acknowledgment_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.po_number} - {self.vendor.name}"
+    
+    def save(self, force_insert: bool = ..., force_update: bool = ..., using: str | None = ..., update_fields: Iterable[str] | None = ...) -> None:
+        if self.po_number == "":
+            while True:
+                x = 0
+                code = ucg.generate(x, max_length=15, random_chars= 4)
+                try:
+                    Vendor.objects.get(vender_code = code)
+                    x += 1
+                except Exception as e:
+                    self.po_number = code
+                    break
+        return super().save()
+
+class HistoricalPerformance(models.Model):
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
     on_time_delivery_rate = models.FloatField()
     quality_rating_avg = models.FloatField()
     average_response_time = models.FloatField()
     fulfillment_rate = models.FloatField()
 
-    def __str__(self):
-        return self.name
-    
-    # def __init__(self, *args: Any, **kwargs: Any) -> None:
-    #     super().__init__(*args, **kwargs)
-    #     x = VendorCode()
-    #     self.vendor_code = x.name
-
-
+    def __str__(self) -> str:
+        return f"{self.vendor.name} - {self.date}"
