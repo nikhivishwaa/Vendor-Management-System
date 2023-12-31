@@ -2,7 +2,7 @@
 ## Project Requirements
 
 ```
-python 3.10 or above
+Python 3.10 or above
 git bash CLI
 Visual Studio Code - Code Editor
 Postman software (optional)
@@ -68,8 +68,8 @@ python manage.py runserver
 
 #### Admin Credentials to login in Django Admin Panel
 
-username - `  admin  `<br>
-password - ` root@8000 `<br>
+username - `   admin       `<br>
+password - `   root@8000   `<br>
 
 ###### Create new admin by following command
 
