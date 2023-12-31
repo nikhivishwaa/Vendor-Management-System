@@ -9,10 +9,19 @@
 
 #### open git bash and run the following commands
 
-`git clone git@github.com:nikhivishwaa/Vendor-Management-System.git` - clone the project<br><br>
-`cd Vendor-Management-System/` - Change Directory <br><br>
-`python -m venv env` - prepare Python virtual environment<br><br>
-`code .` - open vscode by this command<br><br>
+###### clone the project
+```
+git clone git@github.com:nikhivishwaa/Vendor-Management-System.git
+```
+###### Change Directory
+```
+cd Vendor-Management-System/
+``` 
+###### Prepare Python virtual environment
+```
+python -m venv env```
+```
+code .``` open vscode by this command<br><br>
 
 #### Start new terminal in vscode and run following command
 `.\env\Scripts\activate` - activate venv if not acivated automatically <br><br>
