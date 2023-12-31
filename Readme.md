@@ -5,30 +5,49 @@
 `git bash CLI`<br>
 `Visual Studio Code - Code Editor`<br>
 
-## Step 1 : Run the following commands to setup this project
+## Project Setup : 
 
 #### open git bash and run the following commands
 
-###### clone the project
+###### Clone the project
 ```
 git clone git@github.com:nikhivishwaa/Vendor-Management-System.git
 ```
+
 ###### Change Directory
 ```
 cd Vendor-Management-System/
 ``` 
+
 ###### Prepare Python virtual environment
 ```
-python -m venv env```
+python -m venv env
 ```
-code .``` open vscode by this command<br><br>
 
-#### Start new terminal in vscode and run following command
-`.\env\Scripts\activate` - activate venv if not acivated automatically <br><br>
-`pip install -r requirements.txt` - Download all Dependencies<br><br>
-`cd vemsys` - Switch to the project<br><br>
+###### Open vscode by this command
+```
+code .
+```
 
-##### Now run commands for migrations
+
+#### Start new terminal in vscode and run following commands
+
+###### activate venv if not acivated automatically
+```
+.\env\Scripts\activate
+```
+
+###### Download all Dependencies
+```
+pip install -r requirements.txt
+```
+
+###### Switch to the project
+```
+cd vemsys
+```
+
+##### Run commands for migrations
 ```
 python manage.py makemigrations
 ```
@@ -36,7 +55,8 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-##### Run following commands to start Django server
+
+#### Run this commands to start Django server
 
 ```
 python manage.py runserver
@@ -47,10 +67,9 @@ python manage.py runserver
 username - `admin`<br><br>
 password - `root@8000`<br><br>
 
-###### Or You can register yourself as Admin by following command
+###### Or create new admin by following command
 
 ```
 python manage.py createsuperuser
 ```
 
-<p>now enter your credentials</p>
