@@ -1,13 +1,17 @@
 
 ## Project Requirements
 
-`python 3.10 and above`<br>
-`git bash CLI`<br>
-`Visual Studio Code - Code Editor`<br>
+```
+python 3.10 or above
+git bash CLI
+Visual Studio Code - Code Editor
+Postman software (optional)
+```
+
 
 ## Project Setup : 
 
-#### open git bash and run the following commands
+#### Open git bash and run the following commands
 
 ###### Clone the project
 ```
@@ -32,7 +36,7 @@ code .
 
 #### Start new terminal in vscode and run following commands
 
-###### activate venv if not acivated automatically
+###### Activate venv if not acivated automatically
 ```
 .\env\Scripts\activate
 ```
@@ -62,12 +66,12 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-##### Admin Credentials to login in Django Admin Panel
+#### Admin Credentials to login in Django Admin Panel
 
-username - `admin`<br><br>
-password - `root@8000`<br><br>
+username - `  admin  `<br>
+password - ` root@8000 `<br>
 
-###### Or create new admin by following command
+###### Create new admin by following command
 
 ```
 python manage.py createsuperuser
