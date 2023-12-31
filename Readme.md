@@ -77,3 +77,72 @@ password - `   root@8000   `<br>
 python manage.py createsuperuser
 ```
 
+
+
+## Make request from JS on API endpoints with authtoken
+
+###### Get list of Vendors
+
+```
+const apiUrl = 'http://127.0.0.1:8000/api/vendors/';
+
+// Replace 'YOUR_TOKEN_HERE' with the actual token
+const token = 'YOUR_TOKEN_HERE';
+
+// Make the API request
+fetch(apiUrl, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Token ${token}`,
+    'Content-Type': 'application/json',
+    // Add other headers if needed
+  },
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+```
+
+###### Retrieve vendor data
+
+```
+const apiUrl = 'http://127.0.0.1:8000/api/vendors/{vendor_code}/';
+
+// Replace 'YOUR_TOKEN_HERE' with the actual token
+const token = 'YOUR_TOKEN_HERE';
+
+// Make the API request
+fetch(apiUrl, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Token ${token}`,
+    'Content-Type': 'application/json',
+    // Add other headers if needed
+  },
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+```
+
+
+###### Retrieve vendor performance metrics data
+```
+const apiUrl = 'http://127.0.0.1:8000/api/vendors/{vendor_code}/performance/';
+
+// Replace 'YOUR_TOKEN_HERE' with the actual token
+const token = 'YOUR_TOKEN_HERE';
+
+// Make the API request
+fetch(apiUrl, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Token ${token}`,
+    'Content-Type': 'application/json',
+    // Add other headers if needed
+  },
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+```
