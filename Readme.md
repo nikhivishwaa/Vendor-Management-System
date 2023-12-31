@@ -95,7 +95,7 @@ http://127.0.0.1:8000/api/register/
 
 ### Step 2: Set the Headers of request
 
-<img src='resource/hearders.png'>
+<img src='resource/headers.png'>
 
 ###### Add key -  `Authorization`  with Value
 

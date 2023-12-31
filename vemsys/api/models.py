@@ -49,14 +49,32 @@ class Vendor(models.Model):
         self.update_historical_performance()
         self.save()
 
+    # def update_average_response_time(self):
+    #     response_times = self.purchaseorder_set.filter(acknowledgment_date__isnull=False).annotate(
+    #         response_time=ExpressionWrapper(
+    #             F('acknowledgment_date') - F('issue_date'),
+    #             output_field=DurationField()
+    #         )
+    #     ).aggregate(avg_response_time=Avg('response_time'))['avg_response_time']
+    #     self.average_response_time = response_times.total_seconds() / response_times.count() if response_times.count() > 0 else 0
+    #     self.update_historical_performance()
+    #     self.save()
+
     def update_average_response_time(self):
         response_times = self.purchaseorder_set.filter(acknowledgment_date__isnull=False).annotate(
             response_time=ExpressionWrapper(
                 F('acknowledgment_date') - F('issue_date'),
-                output_field=DurationField()
+                output_field=models.DurationField()
             )
         ).aggregate(avg_response_time=Avg('response_time'))['avg_response_time']
-        self.average_response_time = response_times.total_seconds() / response_times.count() if response_times.count() > 0 else 0
+
+        if response_times:
+            total_seconds = response_times.total_seconds()
+            count = self.purchaseorder_set.filter(acknowledgment_date__isnull=False).count()
+            self.average_response_time = total_seconds / count if count > 0 else 0
+        else:
+            self.average_response_time = 0
+
         self.update_historical_performance()
         self.save()
 
@@ -106,21 +124,21 @@ class PurchaseOrder(models.Model):
                     self.po_number = code
                     break
         super().save()
-        # Check if acknowledgment_date is updated
-        if self.acknowledgment_date:
-            self.vendor.update_average_response_time()
+        # # Check if acknowledgment_date is updated
+        # if self.acknowledgment_date:
+        #     self.vendor.update_average_response_time()
 
-        # Check if the status changed to 'completed'
-        if self.status == 'completed':
-            self.vendor.update_on_time_delivery_rate()
+        # # Check if the status changed to 'completed'
+        # if self.status == 'completed':
+        #     self.vendor.update_on_time_delivery_rate()
 
-        # Check if the status changed to 'completed' and a quality rating is provided
-        if self.status == 'completed' and self.quality_rating is not None:
-            self.vendor.update_quality_rating_avg()
+        # # Check if the status changed to 'completed' and a quality rating is provided
+        # if self.status == 'completed' and self.quality_rating is not None:
+        #     self.vendor.update_quality_rating_avg()
 
-        # Check if the status changed
-        if self.status != self._get_orig_status():
-            self.vendor.update_fulfillment_rate()
+        # # Check if the status changed
+        # if self.status != self._get_orig_status():
+        #     self.vendor.update_fulfillment_rate()
 
 
 class HistoricalPerformance(models.Model):
@@ -133,3 +151,18 @@ class HistoricalPerformance(models.Model):
 
     def __str__(self) -> str:
         return f"{self.vendor.name} - {self.date}"
+    
+
+@receiver(post_save, sender=PurchaseOrder)
+def handle_purchase_order_save(sender, instance, created, update_fields, **kwargs):
+    if created or ('acknowledgment_date' in update_fields and update_fields is not None):
+        instance.vendor.update_average_response_time()
+
+    if instance.status == 'completed':
+        instance.vendor.update_on_time_delivery_rate()
+
+    if instance.status == 'completed' and instance.quality_rating is not None:
+        instance.vendor.update_quality_rating_avg()
+
+    if update_fields is not None and 'status' in update_fields and instance.status != instance._get_orig_status():
+        instance.vendor.update_fulfillment_rate()
